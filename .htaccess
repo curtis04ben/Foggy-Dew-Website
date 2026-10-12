@@ -1,0 +1,34 @@
+# Foggy Dew Farm: root .htaccess (Apache). Needs mod_rewrite for pretty URLs.
+# PHP's built-in server and GitHub Pages ignore this file.
+
+DirectoryIndex index.php
+
+RewriteEngine On
+
+# The homepage used to be index.html: send old links to the site root
+RewriteRule ^index\.html$ / [R=301,L]
+
+# Pretty article URLs: /news/example-slug -> article.php?slug=example-slug
+RewriteRule ^news/([a-zA-Z0-9\-]+)/?$ article.php?slug=$1 [L,QSA]
+
+# Never allow the raw JSON content files to be downloaded directly
+<IfModule mod_authz_core.c>
+  <Files "*.json">
+    Require all denied
+  </Files>
+</IfModule>
+<IfModule !mod_authz_core.c>
+  <Files "*.json">
+    Order allow,deny
+    Deny from all
+  </Files>
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+</IfModule>
+
+# Don't list directory contents. If this causes a 500 error on your host,
+# delete this line; the per-directory Deny rules still protect data/ and backend/.
+Options -Indexes

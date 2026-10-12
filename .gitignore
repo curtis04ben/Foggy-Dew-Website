@@ -1,1 +1,7 @@
 Notes.txt
+
+# Local server settings / secrets: never commit these
+backend/config.local.php
+
+# Admin login, created on first visit to /admin/
+/data/admin-credentials.json

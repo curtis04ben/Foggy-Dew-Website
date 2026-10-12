@@ -1,3 +1,8 @@
+<?php
+require_once __DIR__ . '/includes/content.php';
+// The three newest published articles, newest on the left
+$latestNews = array_slice(fd_get_articles(true), 0, 3);
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -95,6 +100,7 @@
           <li><a href="#lavender">Lavender</a></li>
           <li><a href="#crafts">Crafts</a></li>
           <li><a href="#experiences">Experiences</a></li>
+          <li><a href="news.php">News</a></li>
           <li><a href="#contact" class="nav-cta">Contact</a></li>
         </ul>
       </nav>
@@ -127,10 +133,31 @@
         </div>
       </div>
 
-      <a class="hero-scroll" href="#farm" aria-label="Scroll to The Farm">
+      <a class="hero-scroll" href="<?php echo $latestNews ? '#whats-new' : '#farm'; ?>" aria-label="Scroll down">
         <span aria-hidden="true"></span>
       </a>
     </section>
+
+    <!-- ============ WHAT'S NEW (latest 3 published articles, newest first) ============ -->
+    <?php if ($latestNews): ?>
+    <section class="section section--news" id="whats-new" aria-labelledby="news-title">
+      <div class="container">
+        <header class="news-head">
+          <div>
+            <p class="eyebrow">News &amp; Updates</p>
+            <h2 id="news-title" class="section-title">What's New in Foggy Dew</h2>
+          </div>
+          <a class="btn btn--outline" href="news.php">All news</a>
+        </header>
+
+        <ul class="article-grid" role="list">
+          <?php $cardHeading = 'h3'; foreach ($latestNews as $article): ?>
+            <?php include __DIR__ . '/includes/partials/article-card.php'; ?>
+          <?php endforeach; ?>
+        </ul>
+      </div>
+    </section>
+    <?php endif; ?>
 
     <!-- ============ THE FARM ============ -->
     <section class="section section--farm" id="farm" aria-labelledby="farm-title">
@@ -557,6 +584,7 @@
           <li><a href="#crafts">Crafts</a></li>
           <li><a href="#experiences">Experiences</a></li>
           <li><a href="#camping">Camping</a></li>
+          <li><a href="news.php">News</a></li>
           <li><a href="#contact">Contact</a></li>
         </ul>
       </nav>
@@ -568,7 +596,7 @@
       </div>
     </div>
     <div class="container footer-base">
-      <p>&copy; <span id="year">2026</span> Foggy Dew Farm. Draft prototype.</p>
+      <p>&copy; <span id="year"><?php echo date('Y'); ?></span> Foggy Dew Farm. Draft prototype.</p>
       <p>Placeholder photography used under Creative Commons. See the <a href="CREDITS.md">photo credits</a>.</p>
     </div>
   </footer>

@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "example-workshop-dates-coming-soon",
+    "title": "Workshop Dates Coming Soon (Example)",
+    "date": "2026-10-05",
+    "author": "Foggy Dew Farm",
+    "category": "Workshops",
+    "featured_image": "assets/images/drum.jpg",
+    "excerpt": "A third example entry. The homepage shows the three newest published articles, so publishing a new one pushes the oldest off the row.",
+    "body": "Placeholder text for a third example article, perhaps announcing the first dates for drum making, broom making and basket making classes.\n\nDelete this example once real news is ready.",
+    "related_section": "index.php#experiences",
+    "published": true
+  },
+  {
+    "slug": "example-lavender-taking-root",
+    "title": "The Lavender Is Taking Root (Example)",
+    "date": "2026-09-28",
+    "author": "Foggy Dew Farm",
+    "category": "Lavender",
+    "featured_image": "assets/images/lavender-rows.jpg",
+    "excerpt": "An example article showing how published posts appear on the News page, with a category, date and short summary.",
+    "body": "This is placeholder text for an example article. A real post might describe planting day, the varieties chosen, and how the young plants are settling in ahead of the first harvest in 2028.\n\nEach blank line in the admin editor starts a new paragraph, like this one.\n\nUse the admin area to edit or delete this entry, or to write and publish new articles.",
+    "related_section": "index.php#lavender",
+    "published": true
+  },
+  {
+    "slug": "example-cutting-willow-in-winter",
+    "title": "Cutting Willow in Winter (Example)",
+    "date": "2026-08-14",
+    "author": "Foggy Dew Farm",
+    "category": "Willow",
+    "featured_image": "assets/images/willow-bulk.jpg",
+    "excerpt": "A second example entry. News is listed newest first, so this one appears after the lavender post.",
+    "body": "Placeholder text for a second example article, perhaps about when and why willow is cut in the dormant season, and how the rods are sorted and dried for basket making.\n\nDelete this example once real articles are ready.",
+    "related_section": "index.php#crafts",
+    "published": true
+  }
+]

@@ -92,7 +92,7 @@
 
   /* ---------- CTA buttons pre-select the enquiry topic ---------- */
   var interest = document.getElementById("f-interest");
-  document.querySelectorAll("[data-interest]").forEach(function (link) {
+  if (interest) document.querySelectorAll("[data-interest]").forEach(function (link) {
     link.addEventListener("click", function () {
       var value = link.getAttribute("data-interest");
       for (var i = 0; i < interest.options.length; i++) {
@@ -105,7 +105,7 @@
   var form = document.getElementById("enquiry-form");
   var status = document.getElementById("form-status");
 
-  form.addEventListener("submit", function (e) {
+  if (form) form.addEventListener("submit", function (e) {
     e.preventDefault();
     var firstInvalid = null;
     form.querySelectorAll("[required]").forEach(function (field) {

@@ -1,33 +1,73 @@
 # Foggy Dew Farm: Draft Website Prototype
 
-A static, single-page prototype for Foggy Dew Farm (Whitesville, New York).
-No build step, no framework, no backend.
+A single-page prototype for Foggy Dew Farm (Whitesville, New York), plus an
+Articles section with a small PHP admin area for posting articles.
+No build step, no framework, no database.
 
 ## Run locally
 
+The articles pages need PHP 8.x (with the standard `json`, `fileinfo` and `mbstring` extensions):
+
 ```bash
-python3 -m http.server 8000 --bind 127.0.0.1
+php -S 127.0.0.1:8000
 ```
 
-Then open <http://127.0.0.1:8000/>.
+Then open <http://127.0.0.1:8000/> for the site and <http://127.0.0.1:8000/admin/> to
+write articles.
 
 ## Structure
 
 ```
-index.html            All page sections (nav, hero, farm, lavender, crafts, experiences, camping, contact, footer)
+index.php             All page sections (nav, hero, what's new, farm, lavender, crafts, experiences, camping, contact, footer)
                       plus an inline SVG sprite (knot emblem, lavender sprig, activity glyphs)
 css/styles.css        Design tokens (colours, type scale, spacing) at the top, then components and sections
 js/main.js            Mobile nav, scroll-spy, reveal animations, image fallback, CTA → form topic, prototype form
 assets/images/        Placeholder photos (see CREDITS.md)
 assets/favicon.svg    Temporary knot favicon
 CREDITS.md            Placeholder photo sources and licences
+
+news.php              News page: every published article, newest first
+article.php           Single article (?slug=..., or /news/slug on Apache)
+.htaccess             Apache: pretty /news/slug URLs, index.html → / redirect, blocks *.json downloads
+includes/content.php  Read/write the JSON content store, slugs, image uploads, escaping
+includes/partials/    Header, footer, SVG sprite and article card shared by the PHP pages
+backend/config.php    Site constants and data paths (optional git-ignored config.local.php)
+data/articles.json    Source of truth for articles
+data/admin-credentials.json  Created on first visit to /admin/ (git-ignored)
+assets/uploads/       Images uploaded through the admin area (scripts can never run here)
+admin/                Password-protected article editor
 ```
+
+## Articles and the admin area
+
+- Visit `/admin/`. The first visit asks you to choose a username and password (stored
+  hashed in `data/admin-credentials.json`); after that it is a normal login.
+- **Articles → + New Article**: title, date, author, category, featured image, excerpt,
+  body (blank line between paragraphs) and an optional link to a homepage section.
+- **Published** controls visibility: unticked articles are drafts, visible only in `/admin`.
+- The homepage's **What's New in Foggy Dew** section shows the three newest published
+  articles, newest on the left. Publishing a newer article pushes the oldest one off the row
+  automatically (it stays on the News page). The section is hidden if nothing is published.
+- Articles are stored in `data/articles.json`. There is no database, so a backup is just a
+  copy of `data/` and `assets/uploads/`.
+- To reset a forgotten password, delete `data/admin-credentials.json` and visit `/admin/` again.
+- The three articles marked "(Example)" are placeholders. Delete them from the admin area.
+
+Security: admin forms are CSRF-protected, failed logins get a growing delay, uploads are
+limited to JPEG/PNG/WEBP/GIF under 5MB (checked by content) and saved with random names,
+and `data/`, `backend/` and `admin/includes/` deny all web access on Apache.
+
+## Hosting
+
+The whole site now needs a PHP host (Apache + PHP, e.g. ordinary shared hosting), because the
+homepage (`index.php`) reads the latest articles. **GitHub Pages cannot run PHP**, so it can no
+longer host this site. The web server needs write access to `data/` and `assets/uploads/`.
 
 ## Replacing photos
 
 Every image is referenced by a descriptive filename (`hero.jpg`, `drum.jpg`, `stream.jpg`, …).
 To swap in real farm photography, overwrite the file in `assets/images/` with the same name,
-or update the `src`/`alt` in `index.html`. If an image fails to load, its frame shows a labelled
+or update the `src`/`alt` in `index.php`. If an image fails to load, its frame shows a labelled
 placeholder instead of a broken-image icon.
 
 Unused alternates kept for convenience: `lavender-farm.jpg`, `basket-fair.jpg`, `camp-forest.jpg`.
@@ -42,4 +82,6 @@ hours, willow varieties/pricing, basket styles, workshop dates/pricing, and the 
 - The enquiry form validates input but **does not send anything**. It needs a form service or backend.
 - Fonts load from Google Fonts. Offline, the page falls back to system serif and sans-serif fonts.
 - Placeholder photos include NonCommercial/NoDerivatives licences. Replace them before going public.
-- `<meta name="robots" content="noindex">` is set deliberately for the draft.
+- `<meta name="robots" content="noindex">` is set deliberately for the draft (on the articles pages too).
+- `php -S` ignores `.htaccess`, so locally the pretty `/news/slug` URLs and the JSON/data
+  access rules don't apply. The site's own `article.php?slug=...` links work either way.

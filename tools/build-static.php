@@ -39,10 +39,21 @@ function fd_render_page($file, $get = [], $requestUri = '') {
     return ob_get_clean();
 }
 
-/** Point links at the static files instead of the PHP pages. */
+/**
+ * Point links at the static files instead of the PHP pages, and tag the
+ * stylesheet and script with a hash of their contents. GitHub Pages lets
+ * browsers reuse files for 10 minutes, so without the tag visitors can see
+ * new pages with an old stylesheet right after a deploy.
+ */
 function fd_static_links($html) {
+    global $root;
     $html = preg_replace('/"article\.php\?slug=([a-z0-9\-]+)"/', '"news/$1.html"', $html);
-    return str_replace(['"index.php', '"news.php'], ['"index.html', '"news.html'], $html);
+    $html = str_replace(['"index.php', '"news.php'], ['"index.html', '"news.html'], $html);
+    foreach (['css/styles.css', 'js/main.js'] as $asset) {
+        $version = substr(md5_file("$root/$asset"), 0, 8);
+        $html = str_replace('"' . $asset . '"', '"' . $asset . '?v=' . $version . '"', $html);
+    }
+    return $html;
 }
 
 function fd_copy_dir($from, $to) {

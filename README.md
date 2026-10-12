@@ -35,6 +35,8 @@ backend/config.php    Site constants and data paths (optional git-ignored config
 data/articles.json    Source of truth for articles
 data/admin-credentials.json  Created on first visit to /admin/ (git-ignored)
 assets/uploads/       Images uploaded through the admin area (scripts can never run here)
+tools/build-static.php  Renders the PHP pages to static HTML for the GitHub Pages draft
+.github/workflows/pages.yml  Builds and deploys the draft to GitHub Pages on push to main
 admin/                Password-protected article editor
 ```
 
@@ -59,9 +61,23 @@ and `data/`, `backend/` and `admin/includes/` deny all web access on Apache.
 
 ## Hosting
 
-The whole site now needs a PHP host (Apache + PHP, e.g. ordinary shared hosting), because the
-homepage (`index.php`) reads the latest articles. **GitHub Pages cannot run PHP**, so it can no
-longer host this site. The web server needs write access to `data/` and `assets/uploads/`.
+**Live site (Blacknight, Apache + PHP):** upload the files as they are. Everything works,
+including `/admin/`.
+
+**Draft site (GitHub Pages):** GitHub Pages can't run PHP, so on every push to `main` the
+GitHub Action in `.github/workflows/pages.yml` runs `tools/build-static.php`, which renders the
+homepage, News page and each published article to plain HTML (`news/<slug>.html`) and deploys
+that. Drafts, `admin/`, `data/` and the PHP source are not published. One-time setup: repo
+**Settings → Pages → Build and deployment → Source: GitHub Actions**.
+
+`/admin/` can't run on GitHub Pages, so for the draft site:
+
+1. Run `php -S 127.0.0.1:8000` and write or edit articles at <http://127.0.0.1:8000/admin/>.
+2. Commit `data/articles.json` and any new images in `assets/uploads/`, and push to `main`.
+3. The Action rebuilds the draft site within a minute or two.
+
+To preview the static version locally: `php tools/build-static.php` (writes to `_site/`,
+git-ignored), then `python3 -m http.server 8001 --directory _site`. The web server needs write access to `data/` and `assets/uploads/`.
 
 ## Replacing photos
 

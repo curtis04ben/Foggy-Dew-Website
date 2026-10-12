@@ -5,3 +5,6 @@ backend/config.local.php
 
 # Admin login, created on first visit to /admin/
 /data/admin-credentials.json
+
+# Static snapshot for GitHub Pages (built by tools/build-static.php)
+/_site/

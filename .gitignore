@@ -1,5 +1,3 @@
-Notes.txt
-
 # Local server settings / secrets: never commit these
 backend/config.local.php
 
